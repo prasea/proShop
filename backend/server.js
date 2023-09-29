@@ -7,8 +7,12 @@ import userRoutes from './routes/userRoutes.js'
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 connectDB();
-const app = express();
 const port = process.env.PORT;
+
+const app = express();
+// Body parser middleware
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
   res.send('APP is running. . . .')
