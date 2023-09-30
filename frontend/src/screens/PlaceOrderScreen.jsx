@@ -73,7 +73,7 @@ const PlaceOrderScreen = () => {
                     <ListGroup.Item key={index}>
                       <Row>
                         <Col md={1}>
-                          <Image src={item.image} fluid rounder />
+                          <Image src={item.image} fluid rounded />
                         </Col>
 
                         <Col>

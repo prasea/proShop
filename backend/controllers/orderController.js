@@ -39,16 +39,32 @@ const getMyOrders = asyncHandler(async (req, res) => {
   res.status(200).json(orders);
 })
 
-//In our orderModel, the isPaid is false by default. But after completing 4 steps, mark the order as paid. 
+
 //@desc Update order to paid
-//@route Get /api/orders/:id/pay
+//@route PUT /api/orders/:id/pay
 //@access Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-  res.send("Update order to paid")
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.payer.email_address
+    }
+    const updatedOrder = await order.save();
+    res.status(200).json(updatedOrder)
+  } else {
+    res.status(400)
+    throw new Error('Order not found ')
+  }
 })
 
 //@desc Update order to delivered
-//@route Get /api/orders/:id/deliver
+//@route PUT /api/orders/:id/deliver
 //@access Private/Admin
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
   res.send("Update order to delivered")
