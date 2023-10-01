@@ -10,20 +10,20 @@ import {
   Form,
 } from 'react-bootstrap';
 import Rating from '../components/Rating';
-import { useGetProductsDetailsQuery } from '../slices/productsApiSlice';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { useState } from 'react';
 import { addToCart } from '../slices/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCreateProductMutation } from '../slices/productsApiSlice';
+import { useGetProductsDetailsQuery, useCreateReviewMutation } from '../slices/productsApiSlice';
 import { toast } from 'react-toastify'
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
   const { data: product, isLoading, error, refetch } = useGetProductsDetailsQuery(productId);
 
-  const [createProductReview, { isLoading: loadingProductReview }] = useCreateProductMutation();
+  const [createProductReview, { isLoading: loadingProductReview }] = useCreateReviewMutation();
+
 
   const { userInfo } = useSelector(state => state.auth);
 

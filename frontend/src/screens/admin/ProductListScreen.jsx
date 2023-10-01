@@ -5,8 +5,11 @@ import Message from '../../components/Message'
 import Loader from '../../components/Loader'
 import { useGetProductsQuery, useCreateProductMutation, useDeleteProductMutation } from '../../slices/productsApiSlice'
 import { toast } from 'react-toastify'
+import { useParams } from 'react-router-dom'
+import Paginate from '../../components/Paginate'
 const ProductListScreen = () => {
-  const { data: products, isLoading, error, refetch } = useGetProductsQuery()
+  const { pageNumber } = useParams();
+  const { data, isLoading, error, refetch } = useGetProductsQuery(pageNumber)
   const [createProduct, { isLoading: loadingCreate }] = useCreateProductMutation();
   const [deleteProduct, { isLoading: loadingDelete }] = useDeleteProductMutation();
 
@@ -62,7 +65,7 @@ const ProductListScreen = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map(product => (
+              {data.products.map(product => (
                 <tr key={product._id}>
                   <td>{product._id}</td>
                   <td>{product.name}</td>
@@ -83,6 +86,7 @@ const ProductListScreen = () => {
               ))}
             </tbody>
           </Table>
+          <Paginate pages={data.pages} currentPage={data.page} isAdmin={true} />
         </>
       )}
     </>
