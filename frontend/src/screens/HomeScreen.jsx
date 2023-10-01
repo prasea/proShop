@@ -6,17 +6,26 @@ import Message from '../components/Message';
 import { useParams } from 'react-router-dom';
 import Paginate from '../components/Paginate';
 import { Link } from 'react-router-dom';
+import ProductCarousel from '../components/ProductCarousel';
 const HomeScreen = () => {
   const params = useParams();
   const keyword = params.keyword;
   const pageNumber = params.pageNumber;
 
-  const { data, isLoading, error } = useGetProductsQuery({ keyword, pageNumber });
-
+  const { data, isLoading, error } = useGetProductsQuery({
+    keyword,
+    pageNumber,
+  });
 
   return (
     <>
-      {keyword && <Link to='/' className='btn btn-light mb-4'>Go Back</Link>}
+      {!keyword ? (
+        <ProductCarousel />
+      ) : (
+        <Link to='/' className='btn btn-light mb-4'>
+          Go Back
+        </Link>
+      )}
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -34,7 +43,11 @@ const HomeScreen = () => {
             ))}
           </Row>
 
-          <Paginate pages={data.pages} currentPage={data.page} keyword={keyword ? keyword : ''} />
+          <Paginate
+            pages={data.pages}
+            currentPage={data.page}
+            keyword={keyword ? keyword : ''}
+          />
         </>
       )}
     </>

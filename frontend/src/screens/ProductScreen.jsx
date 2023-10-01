@@ -15,21 +15,29 @@ import Message from '../components/Message';
 import { useState } from 'react';
 import { addToCart } from '../slices/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGetProductsDetailsQuery, useCreateReviewMutation } from '../slices/productsApiSlice';
-import { toast } from 'react-toastify'
-
+import {
+  useGetProductsDetailsQuery,
+  useCreateReviewMutation,
+} from '../slices/productsApiSlice';
+import { toast } from 'react-toastify';
+import Meta from '../components/Meta';
 const ProductScreen = () => {
   const { id: productId } = useParams();
-  const { data: product, isLoading, error, refetch } = useGetProductsDetailsQuery(productId);
+  const {
+    data: product,
+    isLoading,
+    error,
+    refetch,
+  } = useGetProductsDetailsQuery(productId);
 
-  const [createProductReview, { isLoading: loadingProductReview }] = useCreateReviewMutation();
+  const [createProductReview, { isLoading: loadingProductReview }] =
+    useCreateReviewMutation();
 
-
-  const { userInfo } = useSelector(state => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
 
   const [qty, setQty] = useState(1);
-  const [rating, setRating] = useState(0)
-  const [comment, setComment] = useState('')
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,22 +47,22 @@ const ProductScreen = () => {
     navigate('/cart');
   };
 
-  const submitHandler = async e => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     try {
       await createProductReview({
         productId,
         rating,
-        comment
+        comment,
       }).unwrap();
       refetch();
-      toast.success('Review added')
-      setRating(0)
-      setComment('')
+      toast.success('Review added');
+      setRating(0);
+      setComment('');
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
-  }
+  };
   return (
     <>
       <Link className='btn btn-light my-3' to={'/'}>
@@ -67,6 +75,7 @@ const ProductScreen = () => {
         <Message>{error?.data?.message || error.error}</Message>
       ) : (
         <>
+          <Meta title={product.name} />
           <Row>
             <Col md={5}>
               <Image src={product.image} alt={product.name} fluid />
@@ -153,7 +162,7 @@ const ProductScreen = () => {
               <h2>Reviews</h2>
               {product.reviews.length === 0 && <Message>No Reviews</Message>}
               <ListGroup variant='flush'>
-                {product.reviews.map(review => (
+                {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>
                     <Rating value={review.rating} />
@@ -169,7 +178,11 @@ const ProductScreen = () => {
                     <Form onSubmit={submitHandler}>
                       <Form.Group controlId='rating' className='my-2'>
                         <Form.Label>Rating</Form.Label>
-                        <Form.Control as='select' value={rating} onChange={e => setRating(Number(e.target.value))} >
+                        <Form.Control
+                          as='select'
+                          value={rating}
+                          onChange={(e) => setRating(Number(e.target.value))}
+                        >
                           <option value=''>Select. . .</option>
                           <option value='1'>1 - Poor</option>
                           <option value='2'>2 - Fair</option>
@@ -181,13 +194,26 @@ const ProductScreen = () => {
 
                       <Form.Group controlId='comment' className='my-2'>
                         <Form.Label>Comment</Form.Label>
-                        <Form.Control as='textarea' row='3' value={comment} onChange={e => setComment(e.target.value)} />
+                        <Form.Control
+                          as='textarea'
+                          row='3'
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        />
                       </Form.Group>
 
-                      <Button disabled={loadingProductReview} type='submit' variant='primary'>Submit</Button>
+                      <Button
+                        disabled={loadingProductReview}
+                        type='submit'
+                        variant='primary'
+                      >
+                        Submit
+                      </Button>
                     </Form>
                   ) : (
-                    <Message>Please <Link to='/login'>login</Link> to write a review</Message>
+                    <Message>
+                      Please <Link to='/login'>login</Link> to write a review
+                    </Message>
                   )}
                 </ListGroup.Item>
               </ListGroup>
